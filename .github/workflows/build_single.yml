@@ -1,0 +1,122 @@
+name: Build single
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: true
+        type: string
+      profile:
+        required: true
+        type: string
+      mingw_lite_branch:
+        required: true
+        type: string
+      mingw_lite_version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: src-${{ inputs.branch }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: buildenv
+          path: assets
+
+      - name: Download cross toolchain
+        run: |
+          mkdir -p assets
+          cd assets
+          curl -L -O https://github.com/redpanda-cpp/mingw-lite/releases/download/${{ inputs.mingw_lite_version }}/x-mingw${{ inputs.profile }}-${{ inputs.mingw_lite_version }}.tar.zst
+
+      - name: Load container
+        run: |
+          zstdcat assets/buildenv.tar.zst | podman load
+
+      - name: Build
+        run: |
+          podman run --rm --cap-add=sys_admin -v $PWD:/mnt -w /mnt mingw-lite/buildenv \
+            ./main.py --branch ${{ inputs.branch }} --profile ${{ inputs.profile }} --mingw-lite-version ${{ inputs.mingw_lite_version }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lib${{ inputs.profile }}-${{ inputs.mingw_lite_branch }}-${{ inputs.branch }}
+          path: dist
+
+  test_on_linux:
+    name: Test on Linux
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable multiarch
+        run: |
+          sudo dpkg --add-architecture i386
+
+      - uses: ConorMacBride/install-package@v1
+        with:
+          apt: libarchive-tools wine
+
+      # apt install wine-binfmt seems not work
+      - name: Register wine binfmt
+        run: |
+          echo ':DOSWin:M::MZ::/usr/bin/wine:' | sudo tee /proc/sys/fs/binfmt_misc/register
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: lib${{ inputs.profile }}-${{ inputs.mingw_lite_branch }}-${{ inputs.branch }}
+          path: dist
+
+      - name: Download toolchain
+        run: |
+          mkdir -p assets
+          cd assets
+          curl -L -O https://github.com/redpanda-cpp/mingw-lite/releases/download/${{ inputs.mingw_lite_version }}/mingw${{ inputs.profile }}-${{ inputs.mingw_lite_version }}.tar.zst
+
+      - name: Test
+        run: |
+          python test.py --branch ${{ inputs.branch }} --profile ${{ inputs.profile }} --mingw-lite-version ${{ inputs.mingw_lite_version }} -v
+
+  test_on_windows:
+    name: Test on Windows
+    runs-on: windows-2022
+    needs: build
+    steps:
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: ucrt64
+          pacboy: ca-certificates:p python:p python-packaging:p
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: lib${{ inputs.profile }}-${{ inputs.mingw_lite_branch }}-${{ inputs.branch }}
+          path: dist
+
+      - name: Download toolchain
+        run: |
+          mkdir -p assets
+          cd assets
+          curl -L -O https://github.com/redpanda-cpp/mingw-lite/releases/download/${{ inputs.mingw_lite_version }}/mingw${{ inputs.profile }}-${{ inputs.mingw_lite_version }}.tar.zst
+
+      - name: Test
+        shell: msys2 {0}
+        run: |
+          python test.py --branch ${{ inputs.branch }} --profile ${{ inputs.profile }} --mingw-lite-version ${{ inputs.mingw_lite_version }} -v

@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
     help = 'MinGW Lite profile',
   )
   parser.add_argument(
-    '-mv',
+    '-mv', '--mingw-lite-version',
     type = str,
     required = True,
     help = 'MinGW Lite version',

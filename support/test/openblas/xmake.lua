@@ -2,7 +2,7 @@ target("openblas/lapacke-example_user")
   add_files("lapacke-example_user.c")
   add_links("openblas")
   add_tests("default", {
-    pass_output =
+    pass_outputs =
       "\n" ..
       " Entry Matrix A\n" ..
       "   6.80  -6.05  -0.45   8.32  -9.67\n" ..
@@ -21,4 +21,5 @@ target("openblas/lapacke-example_user")
       "LAPACKE_dgecon Example Program Results\n" ..
       "LAPACKE_dgecon completed SUCCESSFULLY...\n" ..
       "LAPACKE_dlange / One-norm of A = 35.020000\n" ..
-      "LAPACKE_dgecon / RCOND of A    = 0.035419\n"})
+      "LAPACKE_dgecon / RCOND of A    = 0.035419\n",
+    plain = true})
