@@ -66,7 +66,7 @@ class ProjectPaths:
     ver: BranchVersions,
   ):
     self.root_dir = Path.cwd()
-    mingw_branch = config.mv.split('-')[0].split('.')[0]
+    mingw_branch = config.mingw_lite_version.split('-')[0].split('.')[0]
     abi_name = f'mingw{config.profile}-{mingw_branch}'
 
     self.assets_dir = self.root_dir / 'assets'
@@ -74,14 +74,14 @@ class ProjectPaths:
     self.patch_dir = self.root_dir / 'patch'
 
     self.library_pkg = self.dist_dir / f'lib{config.profile}-{mingw_branch}-{ver.version}.tar.zst'
-    self.mingw_pkg = self.assets_dir / f'mingw{config.profile}-{config.mv}.tar.zst'
-    self.cross_pkg = self.assets_dir / f'x-mingw{config.profile}-{config.mv}.tar.zst'
+    self.mingw_pkg = self.assets_dir / f'mingw{config.profile}-{config.mingw_lite_version}.tar.zst'
+    self.cross_pkg = self.assets_dir / f'x-mingw{config.profile}-{config.mingw_lite_version}.tar.zst'
 
     # build phase
 
     self.build_dir = Path(f'/tmp/build/{config.branch}/{abi_name}')
     self.layer_dir = Path(f'/tmp/layer/{config.branch}/{abi_name}')
-    self.pkg_dir = Path(f'/tmp/pkg/{config.branch}/{abi_name}')
+    self.pkg_dir = Path(f'{tempfile.gettempdir()}/pkg/{config.branch}/{abi_name}')
 
     src_name = SourcePaths(
       onetbb = f'oneTBB-{ver.onetbb}',

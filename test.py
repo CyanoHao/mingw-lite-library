@@ -92,7 +92,7 @@ def main():
     os.environ['WINEDEBUG'] = '-all'
     xmake_verbose = []
 
-  logging.info("testing library %s with mingw%s-%s", config.branch, config.profile, config.mv)
+  logging.info("testing library %s with mingw%s-%s", config.branch, config.profile, config.mingw_lite_version)
 
   ver = resolve_profile(config)
   paths = ProjectPaths(config, ver)
