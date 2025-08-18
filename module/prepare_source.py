@@ -24,6 +24,15 @@ def _patch(path: Path, patch: Path):
     logging.critical(message)
     raise Exception(message)
 
+def _fmt(ver: BranchProfile, paths: ProjectPaths, download_only: bool):
+  url = f'https://github.com/fmtlib/fmt/releases/download/{ver.fmt}/{paths.src_arx.fmt.name}'
+  validate_and_download(paths.src_arx.fmt, url)
+  if download_only:
+    return
+
+  check_and_extract(paths.src_dir.fmt, paths.src_arx.fmt)
+  patch_done(paths.src_dir.fmt)
+
 def _onetbb(ver: BranchProfile, paths: ProjectPaths, download_only: bool):
   url = f'https://github.com/uxlfoundation/oneTBB/archive/refs/tags/v{ver.onetbb}.tar.gz'
   validate_and_download(paths.src_arx.onetbb, url)
@@ -43,5 +52,7 @@ def _openblas(ver: BranchProfile, paths: ProjectPaths, download_only: bool):
   patch_done(paths.src_dir.openblas)
 
 def prepare_source(ver: BranchProfile, paths: ProjectPaths, download_only: bool):
+  _fmt(ver, paths, download_only)
+
   _onetbb(ver, paths, download_only)
   _openblas(ver, paths, download_only)
