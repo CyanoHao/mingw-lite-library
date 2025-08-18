@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <openblas/lapacke.h>
+#include "lapacke.h"
 
 /* Auxiliary routines prototypes */
 extern void print_matrix( char* desc, lapack_int m, lapack_int n, double* a, lapack_int lda );
