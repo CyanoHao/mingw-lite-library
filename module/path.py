@@ -124,7 +124,7 @@ class ProjectPaths:
 
     # test phase
 
-    self.test_dir = Path(f'{tempfile.gettempdir()}/{abi_name}')
+    self.test_dir = Path(f'{tempfile.gettempdir()}/{config.branch}/{abi_name}')
     self.test_src_dir = self.root_dir / 'support' / 'test'
 
     self.test_mingw_dir = self.test_dir / abi_name
