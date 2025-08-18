@@ -7,11 +7,14 @@ from typing import NamedTuple, Optional
 from module.profile import BranchVersions
 
 class SourcePaths(NamedTuple):
+  fmt: Path
   onetbb: Path
   openblas: Path
 
 class LayerPaths(NamedTuple):
   prefix: Path
+
+  fmt: Path
 
   onetbb: Path
   openblas: Path
@@ -84,16 +87,22 @@ class ProjectPaths:
     self.pkg_dir = Path(f'{tempfile.gettempdir()}/pkg/{config.branch}/{abi_name}')
 
     src_name = SourcePaths(
+      fmt = f'fmt-{ver.fmt}',
+
       onetbb = f'oneTBB-{ver.onetbb}',
       openblas = f'OpenBLAS-{ver.openblas}',
     )
 
     self.src_dir = SourcePaths(
+      fmt = self.build_dir / src_name.fmt,
+
       onetbb = self.build_dir / src_name.onetbb,
       openblas = self.build_dir / src_name.openblas,
     )
 
     self.src_arx = SourcePaths(
+      fmt = self.assets_dir / f'{src_name.fmt}.zip',
+
       onetbb = self.assets_dir / f'{src_name.onetbb}.tar.gz',
       openblas = self.assets_dir / f'{src_name.openblas}.tar.gz',
     )
@@ -101,12 +110,16 @@ class ProjectPaths:
     self.layer = LayerPaths(
       prefix = self.layer_dir,
 
+      fmt = self.layer_dir / 'fmt',
+
       onetbb = self.layer_dir / 'onetbb',
       openblas = self.layer_dir / 'openblas',
     )
 
     self.pkg = LayerPaths(
       prefix = self.pkg_dir,
+
+      fmt = self.pkg_dir / 'fmt.tar',
 
       onetbb = self.pkg_dir / 'onetbb.tar',
       openblas = self.pkg_dir / 'openblas.tar',
