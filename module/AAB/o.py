@@ -102,7 +102,6 @@ def openblas(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace
       raise Exception(f'Unsupported architecture: {ver.arch}')
 
     make_custom(paths.src_dir.openblas, [
-      'libs',
       'NO_SHARED=1',
       'FIXED_LIBNAME=1',
       f'CC={triplet}-gcc',
@@ -113,7 +112,8 @@ def openblas(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace
     ], config.jobs)
     make_custom(paths.src_dir.openblas, [
       'install',
-      f'PREFIX={paths.layer.openblas}',
+      'PREFIX=',
+      f'DESTDIR={paths.layer.openblas}',
       'NO_SHARED=1',
       'FIXED_LIBNAME=1',
     ], jobs = 1)
