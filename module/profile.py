@@ -8,6 +8,8 @@ from module.util import MINGW_ARCH_2_TRIPLET_MAP
 class BranchVersions:
   version: str
 
+  fmt: str                      # [EL] freeze minor
+
   onetbb: str                   # [EL] freeze minor
   openblas: str                 # [EL] freeze patch
 
@@ -18,10 +20,14 @@ class BranchVersions:
 
       version: str,
 
+      fmt: str,
+
       onetbb: str,
       openblas: str,
   ):
     self.version = version
+
+    self.fmt = fmt
 
     self.onetbb = onetbb
     self.openblas = openblas
@@ -47,11 +53,15 @@ BRANCHES: Dict[str, BranchVersions] = {
   '2026': BranchVersions(
     version = '2026.0.0',
 
+    fmt = '11.2.0',
+
     onetbb = '2022.2.0',
     openblas='0.3.30',
   ),
   '2025': BranchVersions(
     version='2025.1',
+
+    fmt = '11.0.2',
 
     onetbb = '2022.0.0',
     openblas='0.3.28',
