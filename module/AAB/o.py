@@ -1,5 +1,6 @@
 import argparse
 import os
+from packaging.version import Version
 import shutil
 
 from module.debug import shell_here
@@ -122,3 +123,68 @@ def openblas(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace
     shutil.copy(paths.src_dir.openblas / 'LICENSE', paths.layer.openblas / 'share/licenses/openblas/LICENSE')
 
   package(paths.layer.openblas, paths.pkg.openblas)
+
+def opencv(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace):
+  v = Version(ver.opencv)
+
+  with overlayfs_ro('/usr/local', [
+    paths.toolchain.binutils / 'usr/local',
+    paths.toolchain.crt / 'usr/local',
+    paths.toolchain.gcc / 'usr/local',
+    paths.toolchain.headers / 'usr/local',
+  ]):
+    cmake_config(paths.src_dir.opencv_ade, [
+      *cmake_flags(ver.arch, ver.optimize_for_size),
+    ])
+    cmake_build(paths.src_dir.opencv_ade, config.jobs)
+    cmake_install(paths.src_dir.opencv_ade, paths.layer.opencv)
+
+  with overlayfs_ro('/usr/local', [
+    paths.toolchain.binutils / 'usr/local',
+    paths.toolchain.crt / 'usr/local',
+    paths.toolchain.gcc / 'usr/local',
+    paths.toolchain.headers / 'usr/local',
+
+    paths.layer.jpeg_turbo,
+    paths.layer.opencv,
+    paths.layer.png,
+    paths.layer.webp,
+    paths.layer.zlib,
+  ]):
+    cmake_config(paths.src_dir.opencv, [
+      '-DBUILD_SHARED_LIBS=OFF',
+      '-DBUILD_opencv_apps=OFF',
+      '-DBUILD_PERF_TESTS=OFF',
+      '-DBUILD_TESTS=OFF',
+      '-DOPENCV_GENERATE_SETUPVARS=OFF',
+      '-DOPENCV_GENERATE_PKGCONFIG=ON',
+
+      '-Dade_DIR=/usr/local',
+      '-DBUILD_JPEG=OFF',
+      '-DBUILD_OPENEXR=OFF', '-DWITH_OPENEXR=OFF',
+      '-DBUILD_PNG=OFF',
+      '-DBUILD_WEBP=OFF',
+      '-DBUILD_ZLIB=OFF',
+
+      '-DWITH_FFMPEG=OFF',
+      '-DWITH_IPP=OFF',
+      '-DWITH_JASPER=OFF',
+      '-DWITH_OPENJPEG=OFF',
+      '-DWITH_PROTOBUF=OFF',
+      '-DWITH_TIFF=OFF',
+
+      *cmake_flags(ver.arch, ver.optimize_for_size),
+    ])
+    cmake_build(paths.src_dir.opencv, config.jobs)
+    cmake_install(paths.src_dir.opencv, paths.layer.opencv)
+
+    (paths.layer.opencv / 'LICENSE').unlink()
+    ensure(paths.layer.opencv / 'share/licenses/opencv')
+    shutil.copy(paths.src_dir.opencv / 'LICENSE', paths.layer.opencv / 'share/licenses/opencv/LICENSE')
+
+  package(paths.layer.opencv, paths.pkg.opencv)
+  with open(paths.pkg_dir / 'opencv.dep.txt', 'w') as f:
+    f.write('jpeg-turbo\n')
+    f.write('png\n')
+    f.write('webp\n')
+    f.write('zlib\n')

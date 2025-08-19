@@ -13,7 +13,7 @@ from subprocess import PIPE
 import sys
 
 from module.args import parse_args
-from module.fetch import validate_and_download
+from module.fetch import patch, validate_and_download
 from module.path import ProjectPaths
 from module.profile import BranchProfile, resolve_profile
 from module.util import MINGW_ARCH_2_XMAKE_ARCH_MAP, ensure
@@ -80,6 +80,7 @@ def prepare_test_binary(ver: BranchProfile, paths: ProjectPaths):
 
   fetch_xmake(ver, paths)
   extract(paths.test_xmake_dir, paths.test_xmake_pkg)
+  patch(paths.test_xmake_dir, paths.patch_dir / 'xmake/pkgconf-static.patch')
   paths.test_xmake_exe.chmod(0o755)
 
   extract(paths.pkg_dir, paths.library_pkg)
@@ -88,7 +89,6 @@ def prepare_test_binary(ver: BranchProfile, paths: ProjectPaths):
       extract(paths.test_mingw_dir / 'lib', value)
 
 def test_library(ver: BranchProfile, paths: ProjectPaths, verbose: list[str]):
-  subprocess.call(['wine', 'cmd', '/c', 'echo %PATH%'])
   xmake = paths.test_xmake_exe
   subprocess.check_call([
     xmake, 'f', *verbose,
@@ -119,9 +119,9 @@ def main():
   ver = resolve_profile(config)
   paths = ProjectPaths(config, ver)
 
-  clean(config, paths)
+  # clean(config, paths)
 
-  prepare_dirs(paths)
+  # prepare_dirs(paths)
 
   prepare_test_binary(ver, paths)
 
