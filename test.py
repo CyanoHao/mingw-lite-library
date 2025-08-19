@@ -13,7 +13,7 @@ from subprocess import PIPE
 import sys
 
 from module.args import parse_args
-from module.fetch import validate_and_download
+from module.fetch import patch, validate_and_download
 from module.path import ProjectPaths
 from module.profile import BranchProfile, resolve_profile
 from module.util import MINGW_ARCH_2_XMAKE_ARCH_MAP, ensure

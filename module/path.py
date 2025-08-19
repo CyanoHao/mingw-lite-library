@@ -8,16 +8,37 @@ from module.profile import BranchVersions
 
 class SourcePaths(NamedTuple):
   fmt: Path
+
+  jpeg_turbo: Path
+
   onetbb: Path
   openblas: Path
+  opencv: Path
+  opencv_ade: Path
+  opencv_contrib: Path
+
+  png: Path
+
+  webp: Path
+
+  zlib: Path
 
 class LayerPaths(NamedTuple):
   prefix: Path
 
   fmt: Path
 
+  jpeg_turbo: Path
+
   onetbb: Path
   openblas: Path
+  opencv: Path
+
+  png: Path
+
+  webp: Path
+
+  zlib: Path
 
 class ToolchainPaths(NamedTuple):
   prefix: Path
@@ -89,22 +110,55 @@ class ProjectPaths:
     src_name = SourcePaths(
       fmt = f'fmt-{ver.fmt}',
 
+      jpeg_turbo = f'libjpeg-turbo-{ver.jpeg_turbo}',
+
       onetbb = f'oneTBB-{ver.onetbb}',
       openblas = f'OpenBLAS-{ver.openblas}',
+      opencv = f'opencv-{ver.opencv}',
+      opencv_ade = f'ade-{ver.opencv_ade}',
+      opencv_contrib = f'opencv_contrib-{ver.opencv}',
+
+      png = f'libpng-{ver.png}',
+
+      webp = f'libwebp-{ver.webp}',
+
+      zlib = f'zlib-{ver.zlib}',
     )
 
     self.src_dir = SourcePaths(
       fmt = self.build_dir / src_name.fmt,
 
+      jpeg_turbo = self.build_dir / src_name.jpeg_turbo,
+
       onetbb = self.build_dir / src_name.onetbb,
       openblas = self.build_dir / src_name.openblas,
+      opencv = self.build_dir / src_name.opencv,
+      opencv_ade = self.build_dir / src_name.opencv_ade,
+      opencv_contrib = self.build_dir / src_name.opencv_contrib,
+
+      png = self.build_dir / src_name.png,
+
+      webp = self.build_dir / src_name.webp,
+
+      zlib = self.build_dir / src_name.zlib,
     )
 
     self.src_arx = SourcePaths(
       fmt = self.assets_dir / f'{src_name.fmt}.zip',
 
+      jpeg_turbo = self.assets_dir / f'{src_name.jpeg_turbo}.tar.gz',
+
       onetbb = self.assets_dir / f'{src_name.onetbb}.tar.gz',
       openblas = self.assets_dir / f'{src_name.openblas}.tar.gz',
+      opencv = self.assets_dir / f'{src_name.opencv}.tar.gz',
+      opencv_ade = self.assets_dir / f'{src_name.opencv_ade}.tar.gz',
+      opencv_contrib = self.assets_dir / f'{src_name.opencv_contrib}.tar.gz',
+
+      png = self.assets_dir / f'{src_name.png}.tar.xz',
+
+      webp = self.assets_dir / f'{src_name.webp}.tar.gz',
+
+      zlib = self.assets_dir / f'{src_name.zlib}.tar.gz',
     )
 
     self.layer = LayerPaths(
@@ -112,8 +166,17 @@ class ProjectPaths:
 
       fmt = self.layer_dir / 'fmt',
 
+      jpeg_turbo = self.layer_dir / 'jpeg-turbo',
+
       onetbb = self.layer_dir / 'onetbb',
       openblas = self.layer_dir / 'openblas',
+      opencv = self.layer_dir / 'opencv',
+
+      png = self.layer_dir / 'png',
+
+      webp = self.layer_dir / 'webp',
+
+      zlib = self.layer_dir / 'zlib',
     )
 
     self.pkg = LayerPaths(
@@ -121,8 +184,17 @@ class ProjectPaths:
 
       fmt = self.pkg_dir / 'fmt.tar',
 
+      jpeg_turbo = self.pkg_dir / 'jpeg-turbo.tar',
+
       onetbb = self.pkg_dir / 'onetbb.tar',
       openblas = self.pkg_dir / 'openblas.tar',
+      opencv = self.pkg_dir / 'opencv.tar',
+
+      png = self.pkg_dir / 'png.tar',
+
+      webp = self.pkg_dir / 'webp.tar',
+
+      zlib = self.pkg_dir / 'zlib.tar',
     )
 
     toolchain_dir = self.build_dir / abi_name

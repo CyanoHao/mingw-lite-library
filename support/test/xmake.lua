@@ -1,10 +1,11 @@
 add_rules("mode.debug", "mode.release")
 set_policy("build.c++.modules.gcc.cxx11abi", true)
-set_policy("network.mode", "private")
 
+-- `add_requires` depends on MinGit,
+-- here we provide our `on_config` hook to avoid it.
 function pkgconf(name)
   return function (target)
-    local cflags = os.iorunv("pkgconf", {"--static", "--cflags", name})
+    local cflags = os.iorunv("pkgconf", {"--cflags", name})
     for _, flag in ipairs(os.argv(cflags)) do
       if flag:startswith("-I") and #flag > 2 then
         local includedir = flag:sub(3)
@@ -18,7 +19,7 @@ function pkgconf(name)
         target:add("cxflags", flag)
       end
     end
-    local ldflags = os.iorunv("pkgconf", {"--static", "--libs", name})
+    local ldflags = os.iorunv("pkgconf", {"--libs", name})
     for _, flag in ipairs(os.argv(ldflags)) do
       if flag:startswith("-L") and #flag > 2 then
           local linkdir = flag:sub(3)
@@ -38,3 +39,4 @@ end
 includes("f/fmt/xmake.lua")
 includes("o/onetbb/xmake.lua")
 includes("o/openblas/xmake.lua")
+includes("o/opencv/xmake.lua")
