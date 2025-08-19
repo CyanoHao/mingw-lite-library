@@ -38,3 +38,4 @@ end
 includes("f/fmt/xmake.lua")
 includes("o/onetbb/xmake.lua")
 includes("o/openblas/xmake.lua")
+includes("o/opencv/xmake.lua")

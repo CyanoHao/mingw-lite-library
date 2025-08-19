@@ -23,6 +23,40 @@ MINGW_ARCH_2_XMAKE_ARCH_MAP = {
   '32': 'i686',
 }
 
+def cflags(
+  mingw_arch: str,
+  cpp_extra: List[str] = [],
+  common_extra: List[str] = [],
+  ld_extra: List[str] = [],
+  c_extra: List[str] = [],
+  cxx_extra: List[str] = [],
+  optimize_for_size: bool = False,
+  lto: bool = False,
+) -> List[str]:
+  triplet = MINGW_ARCH_2_TRIPLET_MAP[mingw_arch]
+  cpp = ['-DNDEBUG']
+  common = ['-pipe']
+  ld = ['-s']
+  if lto:
+    # lto does not work with -Os
+    common.extend(['-O2', '-flto'])
+    ld.extend(['-O2', '-flto'])
+  else:
+    if optimize_for_size:
+      common.append('-Os')
+    else:
+      common.append('-O2')
+  return [
+    f'CC={triplet}-gcc',
+    f'CXX={triplet}-g++',
+    f'AR={triplet}-gcc-ar',
+    f'RANLIB={triplet}-gcc-ranlib',
+    'CPPFLAGS=' + ' '.join(cpp + cpp_extra),
+    'CFLAGS=' + ' '.join(common + common_extra + c_extra),
+    'CXXFLAGS=' + ' '.join(common + common_extra + cxx_extra),
+    'LDFLAGS=' + ' '.join(ld + ld_extra),
+  ]
+
 def cmake_build(
   cwd: Path,
   jobs: int,
@@ -85,6 +119,13 @@ def cmake_install(
     check = True,
   )
 
+def configure(cwd: Path, args: List[str]):
+  subprocess.run(
+    ['../configure', *args],
+    cwd = cwd,
+    check = True,
+  )
+
 def ensure(path: Path):
   path.mkdir(parents = True, exist_ok = True)
 
@@ -94,6 +135,12 @@ def make_custom(cwd: Path, extra_args: List[str], jobs: int):
     cwd = cwd,
     check = True,
   )
+
+def make_default(cwd: Path, jobs: int):
+  make_custom(cwd, [], jobs)
+
+def make_destdir_install(cwd: Path, destdir: Path):
+  make_custom(cwd, [f'DESTDIR={destdir}', 'install'], jobs = 1)
 
 @contextmanager
 def overlayfs_ro(merged: Path | str, lower: list[Path]):

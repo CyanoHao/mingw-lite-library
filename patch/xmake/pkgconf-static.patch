@@ -1,0 +1,30 @@
+diff '--color=auto' --unified --recursive --text xmake.orig/modules/lib/detect/pkgconfig.lua xmake/modules/lib/detect/pkgconfig.lua
+--- xmake.orig/modules/lib/detect/pkgconfig.lua	2025-07-18 03:41:10.000000000 +0800
++++ xmake/modules/lib/detect/pkgconfig.lua	2025-08-25 07:05:43.538845011 +0800
+@@ -143,12 +143,16 @@
+         return
+     end
+ 
++    -- request static lib?
++    local configs = opt.configs or {}
++    local static_flag = configs.shared and "--shared" or "--static"
++
+     -- get cflags
+     local found
+     local result = {}
+     local envs = {PKG_CONFIG_PATH = opt.configdirs}
+     local cflags = try {function ()
+-        return os.iorunv(pkgconfig, {"--cflags", name}, {envs = envs})
++        return os.iorunv(pkgconfig, {static_flag, "--cflags", name}, {envs = envs})
+     end, catch {function (errs)
+         found = false
+     end}}
+@@ -178,7 +182,7 @@
+     end
+ 
+     -- get libs and ldflags
+-    local ldflags = try { function () return os.iorunv(pkgconfig, {"--libs", name}, {envs = envs}) end }
++    local ldflags = try { function () return os.iorunv(pkgconfig, {static_flag, "--libs", name}, {envs = envs}) end }
+     if ldflags then
+         for _, flag in ipairs(os.argv(ldflags)) do
+             if flag:startswith("-L") and #flag > 2 then
