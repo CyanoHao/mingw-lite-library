@@ -8,10 +8,20 @@ from module.util import MINGW_ARCH_2_TRIPLET_MAP
 class BranchVersions:
   version: str
 
-  fmt: str                      # [EL] freeze minor
+  fmt: str                      # freeze minor
 
-  onetbb: str                   # [EL] freeze minor
-  openblas: str                 # [EL] freeze patch
+  jpeg_turbo: str               # freeze minor
+
+  onetbb: str                   # freeze minor
+  openblas: str                 # freeze patch
+  opencv: str                   # freeze minor
+  opencv_ade: str               # freeze patch
+
+  png: str                      # freeze patch
+
+  webp: str                     # freeze minor
+
+  zlib: str                     # freeze minor
 
   xmake: str = '3.0.1'
 
@@ -22,15 +32,35 @@ class BranchVersions:
 
       fmt: str,
 
+      jpeg_turbo: str,
+
       onetbb: str,
       openblas: str,
+      opencv: str,
+      opencv_ade: str,
+
+      png: str,
+
+      webp: str,
+
+      zlib: str,
   ):
     self.version = version
 
     self.fmt = fmt
 
+    self.jpeg_turbo = jpeg_turbo
+
     self.onetbb = onetbb
     self.openblas = openblas
+    self.opencv = opencv
+    self.opencv_ade = opencv_ade
+
+    self.png = png
+
+    self.webp = webp
+
+    self.zlib = zlib
 
 class BranchProfile(BranchVersions):
   arch: str
@@ -55,8 +85,18 @@ BRANCHES: Dict[str, BranchVersions] = {
 
     fmt = '11.2.0',
 
+    jpeg_turbo = '3.1.1',
+
     onetbb = '2022.2.0',
     openblas='0.3.30',
+    opencv = '4.12.0',
+    opencv_ade = '0.1.2e',
+
+    png = '1.6.50',
+
+    webp = '1.6.0',
+
+    zlib = '1.3.1',
   ),
 }
 
