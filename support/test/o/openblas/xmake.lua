@@ -1,6 +1,8 @@
+add_requires("pkgconfig::openblas", {alias = "openblas", system = true})
+
 target("openblas/lapacke-example_user")
+  add_packages("openblas")
   add_files("lapacke-example_user.c")
-  add_links("openblas")
   add_tests("default", {
     pass_output =
       "\n" ..

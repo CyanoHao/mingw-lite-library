@@ -1,6 +1,8 @@
 from typing import Dict
 
 CHECKSUMS: Dict[str, str] = {
+  'MinGit-2.37.1-64-bit.zip': 'edacf2d5c39555c25a396e0b9d27182ab5587259dc2e824b4490996b373f9300',
+
   'OpenBLAS-0.3.28.tar.gz': 'f1003466ad074e9b0c8d421a204121100b0751c96fc6fcf3d1456bd12f8a00a1',
   'OpenBLAS-0.3.30.tar.gz': '27342cff518646afb4c2b976d809102e368957974c250a25ccc965e53063c95d',
 

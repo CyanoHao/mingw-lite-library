@@ -36,6 +36,7 @@ def prepare_dirs(paths: ProjectPaths):
   )
 
 def extract(path: Path, arx: Path):
+  ensure(path.parent)
   subprocess.run([
     'bsdtar',
     '-C', path.parent,
@@ -48,8 +49,34 @@ def fetch_xmake(ver: BranchProfile, paths: ProjectPaths):
   xmake_url = f'https://github.com/xmake-io/xmake/releases/download/v{ver.xmake}/{paths.test_xmake_pkg.name}'
   validate_and_download(paths.test_xmake_pkg, xmake_url)
 
+def fetch_mingit(ver: BranchProfile, paths: ProjectPaths):
+  mingit_url = f'https://github.com/git-for-windows/git/releases/download/v{ver.mingit}.windows.1/{paths.test_mingit_pkg.name}'
+  validate_and_download(paths.test_mingit_pkg, mingit_url)
+
+def winepath(path: Path) -> str:
+  if platform.system() == 'Windows':
+    return str(path)
+  else:
+    return subprocess.check_output(['winepath', '-w', path]).decode().strip()
+
+def prepend_to_path_string(path: Path, path_string: str) -> str:
+  if not path_string:
+    return winepath(path)
+  return winepath(path) + ';' + path_string
+
+def prepend_to_path(path: Path):
+  if platform.system() == 'Windows':
+    os.environ['PATH'] = prepend_to_path_string(path, os.getenv('PATH'))
+  else:
+    os.environ['WINEPATH'] = prepend_to_path_string(path, os.getenv('WINEPATH'))
+
 def prepare_test_binary(ver: BranchProfile, paths: ProjectPaths):
   extract(paths.test_mingw_dir, paths.mingw_pkg)
+  prepend_to_path(paths.test_mingw_dir / 'bin')
+
+  fetch_mingit(ver, paths)
+  extract(paths.test_mingit_dir, paths.test_mingit_pkg)
+  prepend_to_path(paths.test_mingit_dir)
 
   fetch_xmake(ver, paths)
   extract(paths.test_xmake_dir, paths.test_xmake_pkg)
@@ -60,13 +87,8 @@ def prepare_test_binary(ver: BranchProfile, paths: ProjectPaths):
     if value.name.endswith('.tar'):
       extract(paths.test_mingw_dir / 'lib', value)
 
-def winepath(path: Path):
-  if platform.system() == 'Windows':
-    return str(path)
-  else:
-    return subprocess.check_output(['winepath', '-w', path]).decode().strip()
-
 def test_library(ver: BranchProfile, paths: ProjectPaths, verbose: list[str]):
+  subprocess.call(['wine', 'cmd', '/c', 'echo %PATH%'])
   xmake = paths.test_xmake_exe
   subprocess.check_call([
     xmake, 'f', *verbose,

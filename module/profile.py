@@ -13,6 +13,7 @@ class BranchVersions:
   onetbb: str                   # [EL] freeze minor
   openblas: str                 # [EL] freeze patch
 
+  mingit: str = '2.37.1'
   xmake: str = '3.0.1'
 
   def __init__(
