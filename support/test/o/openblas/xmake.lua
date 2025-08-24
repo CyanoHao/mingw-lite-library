@@ -1,6 +1,6 @@
 target("openblas/lapacke-example_user")
+  on_config(pkgconf("openblas"))
   add_files("lapacke-example_user.c")
-  add_links("openblas")
   add_tests("default", {
     pass_outputs =
       "\n" ..
