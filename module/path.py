@@ -59,6 +59,8 @@ class ProjectPaths:
   test_src_dir: Path
 
   test_mingw_dir: Path
+  test_mingit_dir: Path
+  test_mingit_pkg: Path
   test_xmake_dir: Path
   test_xmake_exe: Path
   test_xmake_pkg: Path
@@ -141,6 +143,8 @@ class ProjectPaths:
     self.test_src_dir = self.root_dir / 'support' / 'test'
 
     self.test_mingw_dir = self.test_dir / abi_name
+    self.test_mingit_dir = self.test_dir / 'mingit/cmd'
+    self.test_mingit_pkg = self.assets_dir / f'MinGit-{ver.mingit}-64-bit.zip'
     self.test_xmake_dir = self.test_dir / 'xmake'
     self.test_xmake_exe = self.test_xmake_dir / 'xmake.exe'
     self.test_xmake_pkg = self.assets_dir / f'xmake-v{ver.xmake}.win64.zip'
