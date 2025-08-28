@@ -15,7 +15,7 @@ jobs:
             branch = ['${{ github.ref_name }}'.split('.')[0]]
             release = True
           else:
-            branch = ['2026', '2025']
+            branch = ['2026']
             release = False
           print(f"branch={json.dumps(branch)}")
           print(f"release={json.dumps(release)}")
