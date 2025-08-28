@@ -58,14 +58,6 @@ BRANCHES: Dict[str, BranchVersions] = {
     onetbb = '2022.2.0',
     openblas='0.3.30',
   ),
-  '2025': BranchVersions(
-    version='2025.1',
-
-    fmt = '11.0.2',
-
-    onetbb = '2022.0.0',
-    openblas='0.3.28',
-  ),
 }
 
 def resolve_profile(config: argparse.Namespace) -> BranchProfile:
