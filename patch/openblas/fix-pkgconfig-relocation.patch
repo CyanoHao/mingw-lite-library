@@ -1,0 +1,18 @@
+diff --unified --recursive --text OpenBLAS-0.3.30.orig/Makefile.install OpenBLAS-0.3.30/Makefile.install
+--- OpenBLAS-0.3.30.orig/Makefile.install
++++ OpenBLAS-0.3.30/Makefile.install
+@@ -176,11 +176,12 @@
+ 	PKGFILE="$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)/$(LIBSONAMEBASE)$(SUFFIX64).pc"
+ 
+ 	@echo Generating $(LIBSONAMEBASE)$(SUFFIX64).pc in "$(DESTDIR)$(OPENBLAS_PKGCONFIG_DIR)"
+-	@echo 'libdir='$(OPENBLAS_LIBRARY_DIR) > "$(PKGFILE)"
++	@echo 'prefix='$(PREFIX) > "$(PKGFILE)"
++	@echo 'libdir=$${prefix}/lib' >> "$(PKGFILE)"
+ 	@echo 'libprefix='$(LIBNAMEPREFIX) >> "$(PKGFILE)"
+ 	@echo 'libnamesuffix='$(LIBNAMESUFFIX) >> "$(PKGFILE)"
+ 	@echo 'libsuffix='$(SYMBOLSUFFIX) >> "$(PKGFILE)"
+-	@echo 'includedir='$(OPENBLAS_INCLUDE_DIR) >> "$(PKGFILE)"
++	@echo 'includedir=$${prefix}/include' >> "$(PKGFILE)"
+ 	@echo 'omp_opt='$(FOMP_OPT) >> "$(PKGFILE)"
+ 	@echo 'openblas_config= USE_64BITINT='$(INTERFACE64) 'DYNAMIC_ARCH='$(DYNAMIC_ARCH) 'DYNAMIC_OLDER='$(DYNAMIC_OLDER) 'NO_CBLAS='$(NO_CBLAS) 'NO_LAPACK='$(NO_LAPACK) 'NO_LAPACKE='$(NO_LAPACKE) 'NO_AFFINITY='$(NO_AFFINITY) 'USE_OPENMP='$(USE_OPENMP) $(TARGET) 'MAX_THREADS='$(NUM_THREADS)>> "$(PKGFILE)"
+ 	@echo 'version='$(VERSION) >> "$(PKGFILE)"
