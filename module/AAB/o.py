@@ -112,7 +112,7 @@ def openblas(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace
     ], config.jobs)
     make_custom(paths.src_dir.openblas, [
       'install',
-      'PREFIX=',
+      'PREFIX=/',
       f'DESTDIR={paths.layer.openblas}',
       'NO_SHARED=1',
       'FIXED_LIBNAME=1',

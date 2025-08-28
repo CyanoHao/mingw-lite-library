@@ -9,20 +9,9 @@ import subprocess
 from urllib.error import URLError
 from urllib.request import urlopen
 
-from module.fetch import validate_and_download, check_and_extract, patch_done
+from module.fetch import validate_and_download, check_and_extract, patch, patch_done
 from module.path import ProjectPaths
 from module.profile import BranchProfile
-
-def _patch(path: Path, patch: Path):
-  res = subprocess.run([
-    'patch',
-    '-Np1',
-    '-i', patch,
-  ], cwd = path)
-  if res.returncode != 0:
-    message = 'Patch fail: applying %s to %s' % (patch.name, path.name)
-    logging.critical(message)
-    raise Exception(message)
 
 def _fmt(ver: BranchProfile, paths: ProjectPaths, download_only: bool):
   url = f'https://github.com/fmtlib/fmt/releases/download/{ver.fmt}/{paths.src_arx.fmt.name}'
@@ -48,8 +37,11 @@ def _openblas(ver: BranchProfile, paths: ProjectPaths, download_only: bool):
   if download_only:
     return
 
-  check_and_extract(paths.src_dir.openblas, paths.src_arx.openblas)
-  patch_done(paths.src_dir.openblas)
+  if check_and_extract(paths.src_dir.openblas, paths.src_arx.openblas):
+    # Fix pkgconfig relocation
+    patch(paths.src_dir.openblas, paths.patch_dir / 'openblas/fix-pkgconfig-relocation.patch')
+
+    patch_done(paths.src_dir.openblas)
 
 def prepare_source(ver: BranchProfile, paths: ProjectPaths, download_only: bool):
   _fmt(ver, paths, download_only)
