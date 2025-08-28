@@ -53,15 +53,11 @@ def openblas(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace
         'TARGET=NORTHWOOD',
         'DYNAMIC_ARCH=1',
         'DYNAMIC_LIST=' + ' '.join([
-          'NORTHWOOD', 'BANIAS',   # sse2
-          'PRESCOTT',              # sse3
-          'CORE2', 'ATOM',         # ssse3
-          'PENRYN', 'DUNNINGTON',  # sse4.1
-          'NEHALEM',               # sse4.2
-          'OPTERON',               # sse2
-          'OPTERON_SSE3',          # sse3
-          'BARCELONA',             # sse4a
-          'NANO',                  # ssse3
+          'NORTHWOOD',  # sse
+          'PRESCOTT',   # sse3
+          'CORE2',      # ssse3
+          'NEHALEM',    # sse4.2
+          'BARCELONA',  # sse4a
         ]),
       ])
     elif ver.arch == '64':
@@ -70,12 +66,12 @@ def openblas(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace
           'TARGET=NEHALEM',
           'DYNAMIC_ARCH=1',
           'DYNAMIC_LIST=' + ' '.join([
-            'NEHALEM',                                              # sse4.2
-            'SANDYBRIDGE',                                          # avx
-            'HASWELL',                                              # avx2
-            'SKYLAKEX', 'COOPERLAKE', 'SAPPHIRERAPIDS',             # avx512
-            'BULLDOZER', 'PILEDRIVER', 'STEAMROLLER', 'EXCAVATOR',  # avx
-            'ZEN',                                                  # avx2
+            'NEHALEM',      # sse4.2
+            'SANDYBRIDGE',  # avx
+            'HASWELL',      # avx2
+            'SKYLAKEX',     # avx512
+            'BULLDOZER',    # avx
+            'ZEN',          # avx2
           ]),
         ])
       else:
@@ -83,19 +79,16 @@ def openblas(ver: BranchProfile, paths: ProjectPaths, config: argparse.Namespace
           'TARGET=GENERIC',
           'DYNAMIC_ARCH=1',
           'DYNAMIC_LIST=' + ' '.join([
-            'PRESCOTT',                                             # sse3
-            'CORE2', 'ATOM',                                        # ssse3
-            'PENRYN', 'DUNNINGTON',                                 # sse4.1
-            'NEHALEM',                                              # sse4.2
-            'SANDYBRIDGE',                                          # avx
-            'HASWELL',                                              # avx2
-            'SKYLAKEX', 'COOPERLAKE', 'SAPPHIRERAPIDS',             # avx512
-            'OPTERON',                                              # sse2
-            'OPTERON_SSE3',                                         # sse3
-            'BARCELONA', 'BOBCAT',                                  # sse4a
-            'BULLDOZER', 'PILEDRIVER', 'STEAMROLLER', 'EXCAVATOR',  # avx
-            'ZEN',                                                  # avx2
-            'NANO',                                                 # ssse3
+            'PRESCOTT',     # sse3
+            'CORE2',        # ssse3
+            'NEHALEM',      # sse4.2
+            'SANDYBRIDGE',  # avx
+            'HASWELL',      # avx2
+            'SKYLAKEX',     # avx512
+            'OPTERON',      # sse2, "older"
+            'BARCELONA',    # sse4a
+            'BULLDOZER',    # avx
+            'ZEN',          # avx2
           ]),
         ])
     else:
